@@ -1,24 +1,7 @@
-<html lang="en">
-  <style>
-    body{
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
-
-
-<body>
-
-<p><a href="{{ url_for('auth.login') }}">Go to login page</a></p>
-<p><a href="{{url_for('auth.register')}}">Go to register page</a></p>
-
-
-</body>
-
-
-</html>
-{#{% extends "layout.html" %}#}
-{#{% block body %}#}
-{#  <h1>Overview</h1>#}
-{#  <p>Do you want to <a href="{{ url_for('login') }}">log in?</a>#}
-{#{% endblock %}#}
+{% extends 'base.html' %}
+{% block header %}
+index
+{% endblock %}
+{% block content %}
+index
+{% endblock %}
