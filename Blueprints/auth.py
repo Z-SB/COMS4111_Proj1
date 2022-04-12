@@ -1,5 +1,6 @@
+import functools
+
 from flask import Blueprint, request, g, session, redirect, url_for, flash, render_template
-from sqlalchemy import exc
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -10,19 +11,19 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(email, password)
-        user = g.conn.execute("select * from users where email_address = %s",email).fetchone()
+        user = g.conn.execute("select * from users where email_address = %s", email).fetchone()
         print(user)
         error = None
         if user is None:
             error = 'Incorrect Email address.'
-        elif user['name'] != password:
+        elif user['password'] != password:
             error = 'Incorrect password.'
 
         if error is None:
             session.clear()
+            session['user_email'] = user['email_address']
             session['user_name'] = user['name']
-            return redirect(url_for('index'))
+            return redirect(url_for('event.index'))
 
         flash(error)
         # messages = get_flashed_messages()
@@ -58,3 +59,31 @@ def register():
         flash(error)
 
     return render_template('register.html')
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    # session.clear()
+    user_email = session.get('user_email')
+    print(user_email)
+    if user_email is None:
+        g.user = None
+    # else:
+        # g.user = g.conn.execute('select * from users where email_address = %s', user_email).fetchone()
+        # print(g.user)
+
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+
+    return wrapped_view()
