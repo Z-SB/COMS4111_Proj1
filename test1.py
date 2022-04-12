@@ -1,12 +1,14 @@
 import os
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response, abort
+from flask import Flask, request, render_template, g, redirect, Response, abort, session, url_for, flash, \
+    get_flashed_messages
 import config
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+
+tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../Downloads/DatabaseProject/templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 app.config.from_object(config)
-
+app.config.from_mapping(SECRET_KEY='qwerty')
 
 DB_USER = "js5940"
 DB_PASSWORD = "3093"
@@ -15,6 +17,14 @@ DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
 DATABASEURI = "postgresql://" + DB_USER + ":" + DB_PASSWORD + "@" + DB_SERVER + "/proj1part2"
 
 engine = create_engine(DATABASEURI)
+
+
+# engine.execute("""drop table if exists test""")
+# engine.execute("""CREATE TABLE IF NOT EXISTS test (
+#   id serial,
+#   name text
+# );""")
+# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
 @app.before_request
@@ -56,16 +66,50 @@ def another():
     return render_template('anotherfile.html')
 
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'GET':
+#         return render_template('login.html')
+#     else:
+#         email = request.form['email']
+#         password = request.form['password']
+#         emails = g.conn.execute("SELECT email_address FROM Users where email_address = %s", email).fetchone()
+#         if emails is None:
+#             return redirect('/noSuchUser')
+#         else:
+#             confirm_password = g.conn.execute('SELECT name FROM Users where email_address = %s', email).fetchone()
+#             if password == list(confirm_password)[0]:
+#                 return redirect('/loginSuccess')
+#             else:
+#                 return redirect('/loginFail')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    elif request.method == 'POST':
+    error = None
+    if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        # 在这里加入验证环节
-        print(email,password)
-        return redirect('/')
+        user = g.conn.execute("select * from users where email_address = %s", email).fetchone()
+        if user is None:
+            error = 'Incorrect Email address.'
+        elif user['name'] != password:
+            error = 'Incorrect password.'
+
+        if error is None:
+            session.clear()
+            session['user_name'] = user['name']
+            return redirect(url_for('index'))
+
+        flash(error)
+        # messages = get_flashed_messages()
+    return render_template('login.html')
+
+
+
+
+@app.route('/userInfo', methods=['GET', 'POST'])
+def userInfo():
+    print(email)
+    return render_template('userInfo.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -86,10 +130,6 @@ def createEvent():
     return render_template('createEvent.html')
 
 
-@app.route('/userInfo')
-def userInfo():
-    return render_template('userInfo.html')
-
 @app.route('/invite')
 def invite():
     return redirect('/userInfo')
@@ -99,9 +139,11 @@ def invite():
 def history():
     return render_template('history.html')
 
+
 @app.route('/comment')
 def comment():
     pass
+
 
 @app.route('/recommendation')
 def recommendation():
@@ -109,4 +151,26 @@ def recommendation():
 
 
 if __name__ == '__main__':
-    app.run()
+    import click
+
+
+    @click.command()
+    @click.option('--debug', is_flag=True)
+    @click.option('--threaded', is_flag=True)
+    @click.argument('HOST', default='0.0.0.0')
+    @click.argument('PORT', default=8111, type=int)
+    def run(debug, threaded, host, port):
+        """
+    This function handles command line parameters.
+    Run the server using
+        python server.py
+    Show the help text using
+        python server.py --help
+    """
+
+        HOST, PORT = host, port
+        print("running on %s:%d" % (HOST, PORT))
+        app.run(host=host, port=PORT, debug=debug, threaded=threaded)
+
+
+    run()
