@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block header %}
-index
+Index
 {% endblock %}
 {% block content %}
-index
+    {% if session != {} %}
+        <a href="{{ url_for('event.create_new_event') }}">Create New Event</a>
+    {% endif %}
 {% endblock %}
