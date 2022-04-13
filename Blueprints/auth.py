@@ -1,7 +1,7 @@
 import functools
 
 from flask import Blueprint, request, g, session, redirect, url_for, flash, render_template
-
+from sqlalchemy import *
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -12,7 +12,6 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = g.conn.execute("select * from users where email_address = %s", email).fetchone()
-        print(user)
         error = None
         if user is None:
             error = 'Incorrect Email address.'
@@ -22,11 +21,14 @@ def login():
         if error is None:
             session.clear()
             session['user_email'] = user['email_address']
+            session['owner_id'] = user['owner']
             session['user_name'] = user['name']
+            session['participant'] = user['participant']
+            session['hobby'] = user['hobby']
+            # session['']
             return redirect(url_for('event.index'))
 
         flash(error)
-        # messages = get_flashed_messages()
     return render_template('login.html')
 
 
@@ -63,14 +65,12 @@ def register():
 
 @bp.before_app_request
 def load_logged_in_user():
-    # session.clear()
     user_email = session.get('user_email')
-    print(user_email)
     if user_email is None:
         g.user = None
     # else:
-        # g.user = g.conn.execute('select * from users where email_address = %s', user_email).fetchone()
-        # print(g.user)
+    #     user = g.conn.execute('select * from users where email_address = %s', user_email).fetchone()
+    #     print(user)
 
 
 @bp.route('/logout')

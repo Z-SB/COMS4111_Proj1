@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, g, session,request
+from flask import Blueprint, render_template, g, session, request, url_for,redirect
 
 bp = Blueprint('event', __name__, url_prefix='/')
 
@@ -17,7 +17,7 @@ def index():
 @bp.route('/createNewEvent', methods=['GET', 'POST'])
 def create_new_event():
     if request.method == 'POST':
-        time = request.form['time']
+        # time = request.form['time']
         title = request.form['title']
         sport = request.form['sport']
         g.conn.execute("""
@@ -26,3 +26,38 @@ def create_new_event():
         return render_template('selectCourt.html')
 
     return render_template('createEvent.html')
+
+@bp.route('/comment',methods = ["POST"])
+def comment():
+    content = request.form['content']
+    event_id = session['event_id']
+    user_id = session['user_email']
+    g.conn.execute("""
+    insert into comment values (%s,%s,%s)
+    """,(user_id,event_id,content))
+    return redirect(url_for('event.event_details'))
+
+
+@bp.route('/event_details')
+def event_details():
+    owner = session['owner_id']
+    event_list = g.conn.execute("""
+    select * from create_events
+    where owner = %s
+    """,owner).fetchall()
+    return render_template('event_details.html',event_list = event_list)
+
+
+@bp.route('/recommendation')
+def recommendation():
+    # user = session['user_email']
+    owner = session['owner_id']
+    hobby = session['hobby']
+    recommendation_list = g.conn.execute("""
+    select title,eid from create_events E
+    where E.type = %s
+        and E.owner!= %s
+    """,(hobby,owner)).fetchall()
+    return render_template('recommendation.html',recommendation_list = recommendation_list)
+
+
