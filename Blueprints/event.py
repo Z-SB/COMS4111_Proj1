@@ -81,22 +81,15 @@ def recommendation():
     """, (hobby, owner)).fetchall()
     return render_template('recommendation.html', recommendation_list=recommendation_list)
 
-# 这个有bug 信息传不出来
-@bp.route('/invite', methods=['GET', 'POST'])
+@bp.route('/invite',methods = ['GET','POST'])
 def invite():
     if request.method == 'POST':
-        # user = session['user_email']
         owner = session['owner_id']
+        participant = request.form['participant']
         content = request.form['content']
-        participant_name = request.form['participant']
-        participant = g.conn.execute("""
-        select participant from users
-        where name = %s
-        """, participant_name).fetchone()
-        print(participant['participant'])
         g.conn.execute("""
         insert into invite values (%s,%s,%s)
-        """, (owner, participant['participant'], content))
+        """,(owner,participant,content))
         return redirect(url_for('event.index'))
     return render_template('invite.html')
 

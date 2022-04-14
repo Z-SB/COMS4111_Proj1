@@ -2,9 +2,11 @@
 {% block header %}
 {% endblock %}
 {% block content %}
-<label for="content">Message</label>
-<input type="text" name = 'content' id = 'content'>
-<label for="participant">Receiver</label>
-<input name = 'participant' id = 'participant'>
-<input type="submit" value = 'send'>
+    <form method = 'post'>
+        <label for="content">content</label>
+        <input type = "text" name = "content" id="content" required>
+        <label for="participant">participant</label>
+        <input name = "participant" id = "participant" required>
+        <input type="submit" value="send">
+    </form>
 {% endblock %}

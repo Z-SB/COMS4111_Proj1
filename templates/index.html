@@ -9,5 +9,7 @@ Index
         <a href="{{ url_for('event.recommendation') }}">Recommendation</a>
         <a href="{{url_for('event.mailbox') }}">Mailbox</a>
         <a href="{{url_for('event.invite')}}">Invite</a>
+    {% else %}
+        Please Login First!
     {% endif %}
 {% endblock %}
