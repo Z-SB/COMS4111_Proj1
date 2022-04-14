@@ -4,7 +4,6 @@ Create New Event
 {% endblock %}
 {% block content %}
     <form method="post">
-
         <label for="title">Title:</label>
         <input name = 'title' id = 'title' required>
 
@@ -13,12 +12,19 @@ Create New Event
 
         <label>Time:</label>
         <input name = 'time' id = 'start' type="datatime" required>
-
 <!--        <label>End time:</label>-->
 <!--        <input name = 'time:' id = 'end_time' required>-->
 <!--        -->
         <label>Court name:</label>
-        <input name = 'court_name' id = 'court name' required>
+<!--        <input name = 'court_name' id = 'name' required>-->
+        <ul>
+            <li>{{item_0}}</li>
+        </ul>
+
+        <input list="court_names">
+        <datalist id="court_names">
+            <option value= {{item_0[:]}}>
+        </datalist>
 
         <label>Court Location:</label>
         <input name = 'court_loc' id = 'court_loc' required>
