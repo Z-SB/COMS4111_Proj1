@@ -4,12 +4,25 @@ Create New Event
 {% endblock %}
 {% block content %}
     <form method="post">
-<!--        <label for="time">Time:</label>-->
-<!--        <input type="time" name = 'time' id = 'time' required>-->
+
         <label for="title">Title:</label>
         <input name = 'title' id = 'title' required>
+
         <label for="sport">Sport</label>
-        <input name = 'sport' id = 'sport'>
+        <input name = 'sport' id = 'sport' required>
+
+        <label>Time:</label>
+        <input name = 'time' id = 'start' type="datatime" required>
+
+<!--        <label>End time:</label>-->
+<!--        <input name = 'time:' id = 'end_time' required>-->
+<!--        -->
+        <label>Court name:</label>
+        <input name = 'court_name' id = 'court name' required>
+
+        <label>Court Location:</label>
+        <input name = 'court_loc' id = 'court_loc' required>
+
         <input type="submit" value="Create New Event">
     </form>
 {% endblock %}
