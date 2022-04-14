@@ -66,7 +66,7 @@ def create_new_event():
 
         return render_template(url_for('event.event_details'))
 
-    return render_template('createEvent.html', item_0=item_0)
+    return render_template('createEvent.html', history=history)
 
 
 @bp.route('/comment', methods=["POST"])

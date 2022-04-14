@@ -12,18 +12,13 @@ Create New Event
 
         <label>Time:</label>
         <input name = 'time' id = 'start' type="datatime" required>
-<!--        <label>End time:</label>-->
-<!--        <input name = 'time:' id = 'end_time' required>-->
-<!--        -->
-        <label>Court name:</label>
-<!--        <input name = 'court_name' id = 'name' required>-->
-        <ul>
-            <li>{{item_0}}</li>
-        </ul>
 
+        <label>Court name:</label>
         <input list="court_names">
         <datalist id="court_names">
-            <option value= {{item_0[:]}}>
+            {% for item in history %}
+                <option value= "{{item}}" >
+            {% endfor %}
         </datalist>
 
         <label>Court Location:</label>
