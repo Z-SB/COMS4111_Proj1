@@ -81,15 +81,20 @@ def recommendation():
     """, (hobby, owner)).fetchall()
     return render_template('recommendation.html', recommendation_list=recommendation_list)
 
+
 @bp.route('/invite',methods = ['GET','POST'])
 def invite():
     if request.method == 'POST':
         owner = session['owner_id']
-        participant = request.form['participant']
+        participant_email = request.form['participant']
         content = request.form['content']
+        participant = g.conn.execute("""
+        select participant from users
+        where email_address = %s
+        """,participant_email).fetchone()
         g.conn.execute("""
         insert into invite values (%s,%s,%s)
-        """,(owner,participant,content))
+        """,(owner,participant[0],content))
         return redirect(url_for('event.index'))
     return render_template('invite.html')
 
