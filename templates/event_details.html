@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
-{% block head %}
+{% block header %}
 {% endblock %}
 {% block content %}
-{% for event in event_list %}
-    {{ event }} {# 这里加个换行 #}
-{% endfor %}
-
+    <h3>{{event[1]}}</h3>
+    <p>owner: {{user_name}}</p>
+    <div>time: {{event_time}}</div>
+    <div>type: {{event[2]}}</div>
+    <div>court: {{court[1]}}</div>
+    <div>location: {{court[0]}}</div>
+    <div>comment: </div>
+    {% for comment in comments %}
+        Comment by:{{comment[0]}} <br>
+        content:{{comment[2]}}<br>
+    {% endfor %}
+<a href="{{url_for('event.invite') }}">invite</a><br>
+<a href="{{url_for('event.comment')}}">comment</a>
 {% endblock %}

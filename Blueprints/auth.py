@@ -2,6 +2,7 @@ import functools
 
 from flask import Blueprint, request, g, session, redirect, url_for, flash, render_template
 from sqlalchemy import *
+from sqlalchemy import exc
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 

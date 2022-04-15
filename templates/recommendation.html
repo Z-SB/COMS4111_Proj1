@@ -3,5 +3,7 @@
 Recommendation
 {% endblock %}
 {% block content %}
-{{ recommendation_list}}
+{% for recommendation in recommendation_list %}
+    Event title:<a href="{{url_for('event.event_details',type = recommendation[1])}}">{{recommendation[0]}}</a><br>
+{% endfor %}
 {% endblock %}

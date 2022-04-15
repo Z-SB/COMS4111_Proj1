@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block head %}
+{% endblock %}
+{% block content %}
+{% for event in event_list %}
+    <a href="{{url_for('event.event_details',type = event[2])}}">{{event[0]}}</a><br>
+{% endfor %}
+{% endblock %}

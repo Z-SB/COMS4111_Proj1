@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% block header %}
-Index
+Main Page
 {% endblock %}
 {% block content %}
     {% if session != {} %}
-        <a href="{{ url_for('event.create_new_event') }}">Create New Event</a>
-        <a href="{{ url_for('event.event_details') }}">Event details</a>
-        <a href="{{ url_for('event.recommendation') }}">Recommendation</a>
-        <a href="{{url_for('event.mailbox') }}">Mailbox</a>
-        <a href="{{url_for('event.invite')}}">Invite</a>
+        <a href="{{ url_for('event.create_new_event') }}">Create New Event</a><br>
+        <a href="{{ url_for('event.my_events') }}">My Events</a><br>
+        <a href="{{ url_for('event.recommendation') }}">Recommendation</a><br>
+        <a href="{{url_for('event.mailbox') }}">Mailbox</a><br>
     {% else %}
         Please Login First!
     {% endif %}

@@ -7,23 +7,35 @@ Create New Event
         <label for="title">Title:</label>
         <input name = 'title' id = 'title' required>
 
-        <label for="sport">Sport</label>
-        <input name = 'sport' id = 'sport' required>
+        <label>Type:</label>
+        <select name="sport" id="cars">
+          <option value="Basketball">Basketball</option>
+          <option value="Volleyball">Volleyball</option>
+          <option value="Tennis">Tennis</option>
+          <option value="Other">Other</option>
+        </select>
 
         <label>Time:</label>
-        <input name = 'time' id = 'start' type="datatime" required>
+        <input type="datetime-local" id="meeting-time"
+       name="time" value = '2022-01-01T00:00'
+       min="2020-01-01T00:00" max="2030-06-14T00:00">
+
+        <label>Recur:</label>
+        <select name="recur_sign" id="recur_sign">
+          <option value="False">False</option>
+            <option value="True">True</option>
+        </select>
 
         <label>Court name:</label>
         <input name ='court_name' list="court_names">
         <datalist id="court_names">
             {% for item in history %}
-                <option value= "{{item}}" >
+                <option value= "{{item[0]}}" >
             {% endfor %}
         </datalist>
 
         <label>Court Location:</label>
         <input name = 'court_loc' id = 'court_loc' required>
-
         <input type="submit" value="Create New Event">
     </form>
 {% endblock %}

@@ -5,6 +5,11 @@
 {% if mail_list == [] %}
 no new message!
 {% else %}
-{{mail_list}}
+{% for mail in mail_list %}
+    Sender:{{mail[0]}} <br>
+    Sender's email: {{mail[1]}}<br>
+    Event title:{{mail[2]}}<br>
+    Message:{{mail[3]}}<br>
+{% endfor %}
 {% endif %}
 {% endblock %}
