@@ -24,13 +24,7 @@ def create_new_event():
     history = g.conn.execute("""
     select name from search_history where email_address = %s
     """, email).fetchone()
-    item_list = ["", "", ""]
-    for i in range(len(history)):
-        item_list[i] = history[i]
-    item_0 = item_list[0]
-    item_1 = item_list[1]
-    item_2 = item_list[2]
-    print(item_0)
+
     if request.method == 'POST':
         owner_id = session['owner_id']
         print('something')
