@@ -5,19 +5,13 @@ bp = Blueprint('event', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
-    # print(session['user_email'])
-    if session.get('user_email'):
-        user_events = g.conn.execute("""
-        select U.email_address,U.name,E.owner,E.title,E.type
-        from users U join create_events E on U.owner = E.owner
-        where U.email_address = %s
-        """, session.get('user_email')).fetchall()
-        return render_template('index.html', event=user_events)
+
     return render_template('index.html')
 
 
 @bp.route('/createNewEvent', methods=['GET', 'POST'])
 def create_new_event():
+
     # history
     email = session['user_email']
     # fetch history depending on email
@@ -27,7 +21,6 @@ def create_new_event():
 
     if request.method == 'POST':
         owner_id = session['owner_id']
-        print('something')
         title = request.form['title']
         sport = request.form['sport']
         g.conn.execute("""
@@ -58,7 +51,7 @@ def create_new_event():
         insert into search_history values (%s,%s)
         """, (email, court_name))
 
-        return render_template(url_for('event.event_details'))
+        return redirect(url_for('event.event_details'))
 
     return render_template('createEvent.html', history=history)
 
@@ -95,3 +88,43 @@ def recommendation():
         and E.owner!= %s
     """, (hobby, owner)).fetchall()
     return render_template('recommendation.html', recommendation_list=recommendation_list)
+
+
+@bp.route('/invite',methods = ['GET','POST'])
+def invite():
+    if request.method == 'POST':
+        owner = session['owner_id']
+        participant_email = request.form['participant']
+        content = request.form['content']
+        participant = g.conn.execute("""
+        select participant from users
+        where email_address = %s
+        """,participant_email).fetchone()
+        g.conn.execute("""
+        insert into invite values (%s,%s,%s)
+        """,(owner,participant[0],content))
+        return redirect(url_for('event.index'))
+    return render_template('invite.html')
+
+
+@bp.route('/mailbox', methods=['GET', 'POST'])
+def mailbox():
+    participant = session['participant']
+    mail_list = g.conn.execute("""
+    select owner,content from invite I
+    where I.participant = %s
+    """, participant).fetchall()
+    sender = []
+    for mail in mail_list:
+        send = []
+        send.append(g.conn.execute("""
+        select name from users
+        where owner = %s
+        """, mail['owner']).fetchone())
+        send.append(g.conn.execute("""
+        select email_address from users
+        where owner = %s
+        """, mail['owner']).fetchone())
+        send.append(mail['content'])
+        sender.append(send)
+    return render_template('mailbox.html', mail_list=sender)

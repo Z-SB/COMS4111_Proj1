@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    <form method = 'post'>
+        <label for="content">content</label>
+        <input type = "text" name = "content" id="content" required>
+        <label for="participant">participant</label>
+        <input name = "participant" id = "participant" required>
+        <input type="submit" value="send">
+    </form>
+{% endblock %}

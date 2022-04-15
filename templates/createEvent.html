@@ -14,7 +14,7 @@ Create New Event
         <input name = 'time' id = 'start' type="datatime" required>
 
         <label>Court name:</label>
-        <input list="court_names">
+        <input name ='court_name' list="court_names">
         <datalist id="court_names">
             {% for item in history %}
                 <option value= "{{item}}" >
