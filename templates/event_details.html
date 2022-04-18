@@ -13,6 +13,8 @@
         Comment by:{{comment[0]}} <br>
         content:{{comment[2]}}<br>
     {% endfor %}
-<a href="{{url_for('event.invite') }}">invite</a><br>
+{% if session['owner_id'] == event[0] %}
+    <a href="{{url_for('event.invite') }}">invite</a><br>
+{% endif %}
 <a href="{{url_for('event.comment')}}">comment</a>
 {% endblock %}
