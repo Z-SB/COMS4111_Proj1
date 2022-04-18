@@ -6,6 +6,9 @@ bp = Blueprint('event', __name__, url_prefix='/')
 @bp.route('/')
 def index():
     g.conn.execute("""
+        delete from choose
+        """)
+    g.conn.execute("""
     delete from recommendation
     """)
     return render_template('index.html')
@@ -105,11 +108,19 @@ def my_events():
         event_list.append([event[1], event[2], event[3]])
     return render_template('my_events.html', event_list=event_list)
 
+@bp.route('/delete_event')
+def delete_events():
+    owner = session['owner_id']
+    eid = session['event_id']
+    g.conn.execute("""
+    delete from create_events
+    where eid = %s
+    """,eid)
+    return redirect(url_for('event.my_events'))
 
 @bp.route('/event_details', methods=['GET', 'POST'])
 def event_details():
     eid = request.args.get('type')
-    print(eid)
     session['event_id'] = eid
     comments = g.conn.execute("""
     select * from comment
