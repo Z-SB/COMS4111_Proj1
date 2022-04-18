@@ -108,15 +108,6 @@ def my_events():
         event_list.append([event[1], event[2], event[3]])
     return render_template('my_events.html', event_list=event_list)
 
-@bp.route('/delete_event')
-def delete_events():
-    owner = session['owner_id']
-    eid = session['event_id']
-    g.conn.execute("""
-    delete from create_events
-    where eid = %s
-    """,eid)
-    return redirect(url_for('event.my_events'))
 
 @bp.route('/event_details', methods=['GET', 'POST'])
 def event_details():
@@ -126,7 +117,6 @@ def event_details():
     select * from comment
     where eid = %s
     """, eid).fetchall()
-    print(comments)
     if not comments:
         comment_list = ['']
     else:
@@ -137,19 +127,16 @@ def event_details():
     select * from create_events
     where eid = %s
     """, eid).fetchone()
-    print(event)
     user = g.conn.execute("""
-        select name from users
+        select name,email_address from users
         where owner = %s
         """, event[0]).fetchone()
-    print(user)
     occur_time = g.conn.execute("""
     select t.start_time from create_events e,occur o,occur_time t
     where e.eid = %s
         and o.tid = t.tid
         and e.eid = o.eid
     """, eid).fetchone()
-    print(occur_time)
     court = g.conn.execute("""
     select c.location,c.name from create_events e,located l,courts c
     where e.eid = %s
