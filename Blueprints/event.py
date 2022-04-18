@@ -32,7 +32,6 @@ def create_new_event():
         g.conn.execute("""
         insert into create_events values (%s,%s,%s)
         """, (owner_id, title, sport))
-        print(owner_id, title, sport)
 
         eid = g.conn.execute("select max(eid) from create_events").fetchone()
 
@@ -47,7 +46,6 @@ def create_new_event():
 
         court_name = request.form['court_name']
         court_loc = request.form['court_loc']
-        print(court_name, court_loc)
         # prevent repeat
         repeat = g.conn.execute("""
                 select count(*) from courts 
@@ -55,7 +53,6 @@ def create_new_event():
                 AND name=%s 
                 AND location=%s
                 """, (sport, court_name, court_loc)).fetchone()
-        print(repeat)
         if repeat[0] == 0:
             g.conn.execute("""
                     insert into courts values (%s,%s,%s)
