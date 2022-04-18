@@ -8,7 +8,7 @@ no new message!
 {% for mail in mail_list %}
     Sender:{{mail[0]}} <br>
     Sender's email: {{mail[1]}}<br>
-    Event title:{{mail[2]}}<br>
+    Event title:<a href="{{url_for('event.event_details',type = mail[4])}}">{{mail[2]}}</a><br>
     Message:{{mail[3]}}<br>
 {% endfor %}
 {% endif %}

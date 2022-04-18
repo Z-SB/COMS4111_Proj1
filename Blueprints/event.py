@@ -226,5 +226,6 @@ def mailbox():
         where eid = %s
         """, mail['eid']).fetchone()[0])
         send.append(mail['content'])
+        send.append(mail['eid'])
         sender.append(send)
     return render_template('mailbox.html', mail_list=sender)
